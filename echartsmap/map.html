@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="height:600px;width:800px"></div>
+    <!-- ECharts单文件引入 -->
+    <script src="echarts-all.js"></script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts图表
+        var myChart = echarts.init(document.getElementById('main')); 
+        
+        var option = {
+    backgroundColor: '#1b1b1b',
+    color: ['gold','aqua','lime'],
+    title : {
+        text: '动态模拟迁徙',
+        x:'center',
+        textStyle : {
+            color: '#fff'
+        }
+    },
+    series : [
+        {
+            name: '动态加载实例',
+            type: 'map',
+            roam: true,
+            hoverable: false,
+            mapType: 'china',
+            itemStyle:{
+                normal:{
+                    borderColor:'rgba(100,149,237,1)',
+                    borderWidth:0.5,
+                    areaStyle:{
+                        color: '#1b1b1b'
+                    }
+                }
+            },
+            data:[],
+            markLine : {
+                smooth:true,
+                effect : {
+                    show: true,
+                    scaleSize: 1,
+                    period: 30,
+                    color: '#fff',
+                    shadowBlur: 10
+                },
+                itemStyle : {
+                    normal: {
+                        borderWidth:1,
+                        lineStyle: {
+                            type: 'solid',
+                            shadowBlur: 10
+                        }
+                    }
+                },
+                geoCoord: { },
+                data : [
+                    [{name:'北京'}, {name:'兰州',value:75}]
+                ]
+            },
+            markPoint : {
+                symbol:'emptyCircle',
+                symbolSize : function (v){
+                    return 10 + v/10
+                },
+                effect : {
+                    show: true,
+                    shadowBlur : 0
+                },
+                itemStyle:{
+                    normal:{
+                        label:{show:false}
+                    },
+                    emphasis: {
+                        label:{position:'top'}
+                    }
+                },
+               data : [
+                    {name:'兰州',value:30},
+                    {name:'包头',value:30},
+                ]
+            },
+            geoCoord:{
+                '北京': [116.4551,40.2539],
+                '保定': [115.0488,39.0948],
+                '兰州': [103.5901,36.3043],
+                '乌鲁木齐': [87.9236,43.5883],
+                '包头': [110.3467,41.4899],
+            },
+ 
+        }
+    ]
+};               
+
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
+    </script>
+<input type="button" value="showColor" onclick="alert(option['backgroundColor'])" >
+<input type="button" value="showname" onclick="alert(option['series'][0]['name'])" >
+<input type="button" value="addpoint" onclick="addpoint()" >
+<input type="button" value="addline" onclick="addline()" >
+</body>
+<script>
+   
+function addpoint(){
+    var point={name:'乌鲁木齐',value:30};
+    myChart.addMarkPoint(0,{
+        data:[point],
+    });
+}
+function addline(){
+    var geoCoord= {
+             '广州': [113.5107,23.2196],
+             '成都': [103.9526,30.7617],
+            };
+    myChart._option['series'][0]['geoCoord']=geoCoord;
+    myChart.freshgeocoord();
+    var con=[{name:'广州'}, {name:'成都',value:75}];
+    var point={name:'成都',value:30};
+    myChart.addMarkLine(0,{
+        data:[con],
+    });
+    myChart.addMarkPoint(0,{
+        data:[point],
+    });
+}
+</script>
+</html>
